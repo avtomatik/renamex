@@ -7,12 +7,12 @@ Created on Mon Oct 24 20:37:25 2022
 """
 
 
-from lib import get_names
+from core.funcs import get_names_walk
 
 PATH_SRC = '/home/green-machine/production'
 PATH_EXP = '/home/green-machine/web'
 
 
-file_names_dir_src = get_names(PATH_SRC)
-file_names_dir_dst = get_names(PATH_EXP)
-print(file_names_dir_dst)
+file_names_l = get_names_walk(PATH_SRC)
+file_names_r = get_names_walk(PATH_EXP)
+print(file_names_r)
