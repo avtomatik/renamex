@@ -1,0 +1,26 @@
+incomplete_files:
+- incompleteDFT.py
+- incompleteDataFusionUSACostIndex.py
+- incompleteUSABLSV.py
+- incompletedataFetchCAN.py
+project_files:
+- datafetch.py
+- project.py
+- test.py
+- tools.py
+reference_articles:
+- reference_en_douglas_p_h_cobb_douglas_production_function_once_again_en.pdf
+- reference_en_douglas_p_h_cobb_douglas_production_function_once_again_en.tex
+- reference_en_douglas_p_h_cobb_douglas_production_function_once_again_ru.pdf
+- reference_en_douglas_p_h_cobb_douglas_production_function_once_again_ru.tex
+- reference_en_samuelson_p_a_paul_douglas_s_measurement.pdf
+- reference_en_samuelson_p_a_paul_douglas_s_measurement.tex
+reference_pdfs:
+- Reference EN Cobb C.W., Douglas P.H. A Theory of Production.pdf
+- Reference EN Douglas P.H. The Theory of Wages.pdf
+- Reference EN Kendrick J.W. Productivity Trends in the United States c2246.pdf
+- Reference EN Kendrick J.W. Productivity Trends in the United States c2249.pdf
+- Reference RU Brown M. 0597_088.pdf
+- Reference RU Brown M. 0597_099.pdf
+- Reference RU Kurenkov Yu.V. Proizvodstvennye moshchnost v promyshlennosti glavnykh
+  kapitalisticheskikh stran.pdf
