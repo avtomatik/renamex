@@ -6,7 +6,7 @@ import csv
 from pathlib import Path
 from typing import Dict, List
 
-from core.config import PATH
+from ..core.config import PATH
 
 
 class FileReader:

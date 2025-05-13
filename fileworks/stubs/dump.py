@@ -2,18 +2,14 @@
 # -*- coding: utf-8 -*-
 
 
-# =============================================================================
-# TODO: Drop Drives in Paths
-# =============================================================================
 from pathlib import Path
 
-from core.config import PATH_DST, PATH_SRC, PATH_TST
-from core.constants import FILE_NAME_DST, FILE_NAME_SRC
-from fileworks.tools.io_utils import read_lines_from_file
-from fileworks.tools.transformers import generate_trimmed_file_name
+from ..core.config import PATH_DST, PATH_SRC, PATH_TST
+from ..core.constants import FILE_NAME_DST, FILE_NAME_SRC
+from ..tools.transformers import generate_trimmed_file_name
 
-file_names_src = read_lines_from_file(FILE_NAME_SRC)
-file_names_dst = read_lines_from_file(FILE_NAME_DST)
+file_names_src = Path(FILE_NAME_SRC).read_text().splitlines()
+file_names_dst = Path(FILE_NAME_DST).read_text().splitlines()
 
 max_len = max(len(file_names_src), len(file_names_dst))
 file_names_src += ['None'] * (max_len - len(file_names_src))
@@ -44,6 +40,9 @@ for file_name_src, file_name_dst in MAP_RENAMING.items():
     src = file_name_dst
     dst = generate_trimmed_file_name(src)
 
+# =============================================================================
+# TODO: Drop Drives in Paths
+# =============================================================================
     if action == f'{PATH_TST} TO {PATH_SRC}':
         src_path = Path(src)
         src_relative_path = src_path.relative_to(src_path.drive)
