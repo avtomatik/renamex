@@ -1,11 +1,12 @@
 from pathlib import Path
-from typing import List, Set, Tuple, Union
+from typing import Union
 
 from ..interfaces.protocols import MatchFileFilter
 
 
 class NameExclusionFilter:
     """
+    Filter files by excluding specific names.
     Usage:
         >>> service = FileService(Path(folder_str or '.'))
         >>> files = service.list_files(
@@ -13,7 +14,7 @@ class NameExclusionFilter:
             )
     """
 
-    def __init__(self, names_to_exclude: Union[str, Tuple[str, ...]]):
+    def __init__(self, names_to_exclude: Union[str, tuple[str, ...]]):
         if isinstance(names_to_exclude, str):
             self.names_to_exclude = {names_to_exclude}
         else:
@@ -25,6 +26,7 @@ class NameExclusionFilter:
 
 class PrefixExclusionFilter:
     """
+    Filter files by excluding specific prefixes.
     Usage:
         >>> service = FileService(Path(folder_str or '.'))
         >>> files = service.list_files(
@@ -33,17 +35,17 @@ class PrefixExclusionFilter:
             )
     """
 
-    def __init__(self, prefixes: Set[str]):
+    def __init__(self, prefixes: set[str]):
         self.prefixes = prefixes
 
     def matches(self, file: Path) -> bool:
-        return not any(
-            file.name.lower().startswith(prefix) for prefix in self.prefixes
-        )
+        name = file.name.lower()
+        return not any(name.startswith(prefix) for prefix in self.prefixes)
 
 
 class PatternAllMatchFilter:
     """
+    Filter files that match all specified patterns.
     Usage:
         >>> service = FileService(Path(folder_str or '.'))
         >>> files = service.list_files(
@@ -51,7 +53,7 @@ class PatternAllMatchFilter:
             )
     """
 
-    def __init__(self, patterns: Tuple[str]):
+    def __init__(self, patterns: tuple[str, ...]):
         self.patterns = patterns
 
     def matches(self, file: Path) -> bool:
@@ -60,6 +62,7 @@ class PatternAllMatchFilter:
 
 class PatternAnyMatchFilter:
     """
+    Filter files that match any of the specified patterns.
     Usage:
         >>> service = FileService(Path(folder_str or '.'))
         >>> files = service.list_files(
@@ -67,7 +70,7 @@ class PatternAnyMatchFilter:
             )
     """
 
-    def __init__(self, patterns: Tuple[str]):
+    def __init__(self, patterns: tuple[str, ...]):
         self.patterns = patterns
 
     def matches(self, file: Path) -> bool:
@@ -75,26 +78,35 @@ class PatternAnyMatchFilter:
 
 
 class EmptyFileFilter:
-    def __init__(self, reserved: Set[str]):
+    """Filter files that are empty and not reserved."""
+
+    def __init__(self, reserved: set[str]):
         self.reserved = reserved
 
     def matches(self, file: Path) -> bool:
-        return file.stat().st_size == 0 and file.name not in self.reserved
+        return (
+            file.is_file()
+            and file.stat().st_size == 0
+            and file.name not in self.reserved
+        )
 
 
 class FileService:
+    """Service to list and filter files in a directory."""
+
     def __init__(self, folder: Path = Path('.')):
         self.folder = folder
 
     def list_files(
         self,
-        filters: List[MatchFileFilter] = None,
+        filters: list[MatchFileFilter] | None = None,
         lowercase: bool = False
-    ) -> List[str]:
+    ) -> list[str]:
         """_summary_
 
         Args:
-            filters (List[FileFilter], optional): _description_. Defaults to None.
+            filters (List[FileFilter], optional): _description_.
+                Defaults to None.
             lowercase (bool, optional): _description_. Defaults to False.
 
         Returns:
@@ -105,13 +117,13 @@ class FileService:
             >>> files = service.list_files(lowercase=True)
         """
         filters = filters or []
-        result = []
+        result: list[str] = []
         for file in self.folder.iterdir():
             if file.is_file() and all(f.matches(file) for f in filters):
                 result.append(file.name.lower() if lowercase else file.name)
         return result
 
-    def list_all_file_names(self) -> List[str]:
+    def list_all_file_names(self) -> list[str]:
         """_summary_
 
         Returns:
@@ -123,7 +135,7 @@ class FileService:
         """
         return [file.name for file in self.folder.iterdir() if file.is_file()]
 
-    def list_empty_files(self, reserved: Set[str]) -> List[str]:
+    def list_empty_files(self, reserved: set[str]) -> list[str]:
         """_summary_
 
         Args:
@@ -139,10 +151,14 @@ class FileService:
         return [
             file.name
             for file in self.folder.iterdir()
-            if file.is_file() and file.stat().st_size == 0 and file.name not in reserved
+            if (
+                file.is_file()
+                and file.stat().st_size == 0
+                and file.name not in reserved
+            )
         ]
 
-    def walk_directory(self) -> List[Tuple[List[str], List[str]]]:
+    def walk_directory(self) -> list[tuple[list[str], list[str]]]:
         """_summary_
 
         Returns:
@@ -152,7 +168,7 @@ class FileService:
             >>> service = FileService(path)
             >>> structure = service.walk_directory()
         """
-        result = []
+        result: list[tuple[list[str], list[str]]] = []
         for path in self.folder.rglob('*'):
             if path.is_dir():
                 dirnames = [p.name for p in path.iterdir() if p.is_dir()]
@@ -162,16 +178,19 @@ class FileService:
 
 
 class NullFileFilter:
-    """A filter that accepts all regular files (ignores directories)."""
+    """Accepts all regular files (ignores directories)."""
 
     def is_target(self, file: Path) -> bool:
         return file.is_file()
 
 
 class FileExtensionFilter:
+    """Filter files by allowed extensions."""
+
     def __init__(self, extensions: tuple[str, ...]):
-        self.extensions = tuple(f'.{ext}' if not ext.startswith(
-            '.') else ext for ext in extensions)
+        self.extensions = tuple(
+            ext if ext.startswith('.') else f'.{ext}' for ext in extensions
+        )
 
     def is_target(self, file: Path) -> bool:
         return file.is_file() and file.suffix in self.extensions

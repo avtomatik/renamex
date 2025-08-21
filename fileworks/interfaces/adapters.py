@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from .protocols import FileTransformer
 from ..tools.movers import FileMoverRenamer
 from ..tools.transformers import TrimFileNameTransformer
+from .protocols import FileTransformer
 
 
 class TrimFileNameTransformerAdapter:

@@ -1,5 +1,8 @@
 # FileWorks
 
+⚠️ **This README is currently undergoing major rework.** ⚠️  
+Content, structure, and instructions may change significantly.
+
 **FileWorks** is a Python-based utility suite designed for efficient file system operations, including file synchronization, transformation, and reporting. It provides a set of scripts to automate common file management tasks, making it easier to handle large volumes of files with minimal manual intervention.
 
 **And the most of all:** A simple CLI tool to move and rename files with customizable filtering and transformation.
@@ -11,7 +14,7 @@
 * **File Reporting**: Generate reports on file discrepancies and changes.
 * **Utility Scripts**: Additional scripts for file system operations and comparisons.
 
-## Folder Structure (To Be Updated)
+## Folder Structure
 
 The repository is organized as follows:
 
@@ -40,8 +43,7 @@ fileworks/
 ├── .env.example                 # Example environment variables
 ├── .gitignore                   # Git ignore file
 ├── LICENSE.md                   # License information
-├── README.md                    # Project overview and documentation
-└── requirements.txt             # Python dependencies
+└── README.md                    # Project overview and documentation
 ```
 
 ---
@@ -53,9 +55,6 @@ Clone the repository and install the required dependencies:
 ```bash
 git clone https://github.com/avtomatik/fileworks.git
 cd fileworks
-pip install --no-cache-dir -r requirements.txt
-cp .env.example .env
-# Then Make Necessary Amendments to .env
 ```
 
 ---

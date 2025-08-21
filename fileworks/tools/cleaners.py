@@ -17,7 +17,7 @@ class RegexStringCleaner:
 
 class CyrillicToLatinTransliterator:
     def __init__(self, mapping: dict[str, str] = CYRILLIC_TO_LATIN):
-        self.mapping = mapping
+        self.trans_table = str.maketrans(mapping)
 
     def transliterate(self, text: str) -> str:
-        return ''.join(self.mapping.get(char, char) for char in text.lower())
+        return text.lower().translate(self.trans_table)

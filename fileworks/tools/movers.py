@@ -6,13 +6,18 @@ from .loggers import NullLogger
 
 
 class FileMoverRenamer:
+    """
+    Moves and renames files in a directory using a transformer, with optional
+    logging.
+    """
+
     def __init__(
         self,
         transformer: FileNameTransformer,
         logger: Optional[Logger] = None
     ):
         self.transformer = transformer
-        self.logger = logger or NullLogger()  # Fallback to NullLogger
+        self.logger = logger or NullLogger()  # Fallback if no logger provided
 
     def move_and_rename(
         self,
@@ -20,7 +25,7 @@ class FileMoverRenamer:
         dst_dir: Path,
         file_names: Iterable[str]
     ) -> None:
-        logs = []
+        logs: list[dict[str, str]] = []
 
         for file_name in file_names:
             src_path = src_dir / file_name
@@ -28,13 +33,11 @@ class FileMoverRenamer:
                 continue
 
             new_name = self.transformer.transform(file_name)
-
             if file_name == new_name:
                 continue
 
             dst_path = dst_dir / new_name
             dst_path.parent.mkdir(parents=True, exist_ok=True)
-
             src_path.rename(dst_path)
 
             logs.append({'src': file_name, 'dst': new_name})
