@@ -1,20 +1,18 @@
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Iterable
 
-from ..interfaces.protocols import FileNameTransformer, Logger
-from .loggers import NullLogger
+from fileworks.interfaces.protocols import FileNameTransformer, Logger
+from fileworks.tools.loggers import NullLogger
 
 
 class FileMoverRenamer:
     """
     Moves and renames files in a directory using a transformer, with optional
-    logging.
+    logging and verbose output.
     """
 
     def __init__(
-        self,
-        transformer: FileNameTransformer,
-        logger: Optional[Logger] = None
+        self, transformer: FileNameTransformer, logger: Logger | None = None
     ):
         self.transformer = transformer
         self.logger = logger or NullLogger()  # Fallback if no logger provided
@@ -23,7 +21,8 @@ class FileMoverRenamer:
         self,
         src_dir: Path,
         dst_dir: Path,
-        file_names: Iterable[str]
+        file_names: Iterable[str],
+        verbose: bool = False,
     ) -> None:
         logs: list[dict[str, str]] = []
 
@@ -40,9 +39,12 @@ class FileMoverRenamer:
             dst_path.parent.mkdir(parents=True, exist_ok=True)
             src_path.rename(dst_path)
 
-            logs.append({'src': file_name, 'dst': new_name})
+            logs.append({"src": file_name, "dst": new_name})
+
+            if verbose:
+                print(f"Renaming '{file_name}' >> '{new_name}'")
 
         if logs:
             self.logger.log(logs)
         else:
-            print('No Files Were Renamed')
+            print("No Files Were Renamed")

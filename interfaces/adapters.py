@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from ..tools.movers import FileMoverRenamer
-from ..tools.transformers import TrimFileNameTransformer
-from .protocols import FileTransformer
+from fileworks.interfaces.protocols import FileNameTransformer
+from fileworks.tools.movers import FileMoverRenamer
+from fileworks.tools.transformers import TrimFileNameTransformer
 
 
 class TrimFileNameTransformerAdapter:
-    """Adapter to make TrimFileNameTransformer compatible with FileTransformer
-    protocol."""
+    """Adapter to make TrimFileNameTransformer compatible with
+    FileNameTransformer protocol."""
 
     def __init__(self, transformer: TrimFileNameTransformer):
         self.transformer = transformer
@@ -19,14 +19,15 @@ class TrimFileNameTransformerAdapter:
 class FileMoverAdapter:
     """Adapter to wrap FileMoverRenamer with the required transformer."""
 
-    def __init__(self, transformer: FileTransformer):
+    def __init__(self, transformer: FileNameTransformer):
         self.transformer = transformer
 
     def move_and_rename(
         self,
         src_dir: Path,
         dst_dir: Path,
-        file_names: list[str]
+        file_names: list[str],
+        verbose: bool,
     ) -> None:
         mover = FileMoverRenamer(self.transformer)
-        mover.move_and_rename(src_dir, dst_dir, file_names)
+        mover.move_and_rename(src_dir, dst_dir, file_names, verbose)
