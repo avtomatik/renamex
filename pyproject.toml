@@ -7,6 +7,5 @@ requires-python = ">=3.10"
 dependencies = []
 
 [tool.ruff]
-line-length = 88
+line-length = 79
 select = ["E", "F", "I", "C"]  # E=pycodestyle, F=pyflakes, I=imports, C=complexity
-ignore = ["E203", "W503"]      # optional: compatible with Black formatting
