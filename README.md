@@ -1,136 +1,163 @@
 # FileWorks
 
-⚠️ **This README is currently undergoing major rework.** ⚠️  
-Content, structure, and instructions may change significantly.
+**FileWorks** is a Python utility suite for efficient file system operations, including moving, renaming, filtering, and transforming files. It provides a simple CLI tool to automate common file management tasks and handle large volumes of files with minimal manual intervention.
 
-**FileWorks** is a Python-based utility suite designed for efficient file system operations, including file synchronization, transformation, and reporting. It provides a set of scripts to automate common file management tasks, making it easier to handle large volumes of files with minimal manual intervention.
-
-**And the most of all:** A simple CLI tool to move and rename files with customizable filtering and transformation.
+---
 
 ## Features
 
-* **File Synchronization**: Keep directories in sync by copying or moving files between them.
-* **File Transformation**: Rename files based on custom rules, such as transliteration and cleaning.
-* **File Reporting**: Generate reports on file discrepancies and changes.
-* **Utility Scripts**: Additional scripts for file system operations and comparisons.
+* **File Transformation**: Rename files with customizable rules, such as transliteration and string cleaning.
+* **File Filtering**: Process only files with certain extensions.
+* **File Renaming**: Move and rename files safely and efficiently.
+* **Utility Functions**: Core modules for file handling, string cleaning, and file system operations.
 
-## Folder Structure
+---
 
-The repository is organized as follows:
+## Repository Structure
 
 ```
-
 fileworks/
-├── core/                        # Core utilities and configurations
-│   ├── __init__.py
-│   ├── config.py                # Configuration settings
+├── core/                        # Core utilities and constants
 │   └── constants.py             # Constant values and mappings
-├── mover/                       # IO-Moving Functionality
-├── scripts/                     # Own Legacy
-├── tools/                       # Utility functions and transformers
-│   ├── __init__.py
-│   ├── filters.py               # File name filters
-│   ├── logger.py                # Renaming logger
-│   ├── transformers.py          # File name transformers
-├── utils/                       # Helpers
-│   ├── compare.py               # Compare with hashsums
-│   ├── date.py                  # Date-time
-│   ├── io.py                    # For moving and renaming files
-│   ├── name.py                  # From camel to snake case
-│   ├── stats.py                 # Files counter
-│   └── string.py                # For strings
-├── main.py                      # Entry point
-├── .env.example                 # Example environment variables
-├── .gitignore                   # Git ignore file
-├── LICENSE.md                   # License information
-└── README.md                    # Project overview and documentation
+├── interfaces/                  # Abstractions and adapters
+│   ├── adapters.py              # File moving adapter
+│   └── protocols.py             # Interface definitions
+├── tools/                       # Utility modules for filtering, cleaning, and transforming
+│   ├── cleaners.py              # File name cleaning and transliteration
+│   ├── cli.py                   # Command-line interface
+│   ├── filenames.py             # File name helpers
+│   ├── filters.py               # File filtering rules
+│   ├── loggers.py               # Logging for file operations
+│   ├── movers.py                # File moving/renaming logic
+│   └── transformers.py          # File name transformers
+├── __main__.py                  # Entry point for `python3 -m fileworks`
+├── LICENSE.md
+└── README.md
 ```
 
 ---
 
 ## Installation
 
-Clone the repository and install the required dependencies:
+Clone the repository and navigate into it:
 
 ```bash
 git clone https://github.com/avtomatik/fileworks.git
 cd fileworks
 ```
 
+*(Optionally, create a virtual environment and install dependencies if required.)*
+
 ---
 
 ## Usage
 
-Run the CLI tool with Python, calling the main module:
+Run the CLI tool with Python:
 
 ```bash
-python3 -m fileworks.fileworks.main [path] [-e EXTENSIONS ...] [-v]
+python3 -m fileworks [path] [-e EXTENSIONS ...]
 ```
 
+### Arguments
+
 * `path` (optional):
-  Directory path to process. Defaults to the current working directory if not provided.
+  Directory to process. Defaults to the **current working directory** if not provided.
 
 * `-e`, `--extensions` (optional):
   Filter files by one or more file extensions (without the leading dot).
   Example: `-e csv txt` will only process `.csv` and `.txt` files.
 
-* `-v`, `--verbose` (optional):
-  Enable verbose output, printing info about the processing steps.
-
 ---
 
-## Examples
+### Examples
 
 Process **all files** in the current directory:
 
 ```bash
-python3 -m fileworks.fileworks.main
+python3 -m fileworks
 ```
 
 Process **only `.csv` and `.txt` files** in the current directory:
 
 ```bash
-python3 -m fileworks.fileworks.main -e csv txt
+python3 -m fileworks -e csv txt
 ```
 
 Process **all files** in a specific directory:
 
 ```bash
-python3 -m fileworks.fileworks.main /path/to/directory
+python3 -m fileworks /path/to/directory
 ```
 
-Process **only `.csv` files** in a specific directory with verbose output:
+Process **only `.csv` files** in a specific directory:
 
 ```bash
-python3 -m fileworks.fileworks.main /path/to/directory -e csv -v
+python3 -m fileworks /path/to/directory -e csv
 ```
+
+---
+
+## Getting Started (Before & After)
+
+Suppose you have a directory with the following files:
+
+```
+~/Downloads/TestFiles/
+├── отчет_январь.csv
+├── отчет_февраль.csv
+├── пример.txt
+├── .hidden_file
+```
+
+Running FileWorks with:
+
+```bash
+python3 -m fileworks ~/Downloads/TestFiles -e csv txt
+```
+
+will process the files using the cleaning, transliteration, and trimming rules. After processing, the directory may look like this:
+
+```
+~/Downloads/TestFiles/
+├── otchet_yanvar.csv
+├── otchet_fevral.csv
+├── primer.txt
+├── .hidden_file
+```
+
+**What happened:**
+
+* Cyrillic file names were transliterated to Latin characters.
+* Spaces or invalid characters were replaced with underscores.
+* Only `.csv` and `.txt` files were processed.
+* Hidden files (starting with `.`) are ignored by default.
+
+This gives users a quick understanding of the transformations FileWorks performs.
 
 ---
 
 ## Notes
 
+
 * File extensions passed to `-e` should **not** include the leading dot (`.`).
 * If no extensions are specified, all files in the directory are processed.
 * The tool processes only **regular files**, ignoring directories.
-
----
-
-## Help
-
-You can always run the tool with `-h` or `--help` to get usage information:
+* Use `--help` to display usage information:
 
 ```bash
-python3 -m fileworks.fileworks.main -h
+python3 -m fileworks --help
 ```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please fork the repository, create a new branch, and submit a pull request with your proposed changes.
+Contributions are welcome! Fork the repository, create a branch, and submit a pull request with your changes.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License — see [LICENSE.md](LICENSE.md) for details.
+
+---

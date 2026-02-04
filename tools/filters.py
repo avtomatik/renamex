@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from ..interfaces.protocols import MatchFileFilter
+from fileworks.interfaces.protocols import MatchFileFilter
 
 
 class NameExclusionFilter:
@@ -94,13 +94,13 @@ class EmptyFileFilter:
 class FileService:
     """Service to list and filter files in a directory."""
 
-    def __init__(self, folder: Path = Path('.')):
+    def __init__(self, folder: Path = Path(".")):
         self.folder = folder
 
     def list_files(
         self,
         filters: list[MatchFileFilter] | None = None,
-        lowercase: bool = False
+        lowercase: bool = False,
     ) -> list[str]:
         """_summary_
 
@@ -169,7 +169,7 @@ class FileService:
             >>> structure = service.walk_directory()
         """
         result: list[tuple[list[str], list[str]]] = []
-        for path in self.folder.rglob('*'):
+        for path in self.folder.rglob("*"):
             if path.is_dir():
                 dirnames = [p.name for p in path.iterdir() if p.is_dir()]
                 filenames = [p.name for p in path.iterdir() if p.is_file()]
@@ -189,7 +189,7 @@ class FileExtensionFilter:
 
     def __init__(self, extensions: tuple[str, ...]):
         self.extensions = tuple(
-            ext if ext.startswith('.') else f'.{ext}' for ext in extensions
+            ext if ext.startswith(".") else f".{ext}" for ext in extensions
         )
 
     def is_target(self, file: Path) -> bool:

@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from ..interfaces.protocols import StringCleaner, Transliterator
+from fileworks.interfaces.protocols import StringCleaner, Transliterator
 
 
 class TrimFileNameTransformer:
@@ -13,9 +13,9 @@ class TrimFileNameTransformer:
         path = Path(file_name)
         cleaned_name = self.cleaner.clean(path.stem)
         transliterated = self.transliterator.transliterate(cleaned_name)
-        return f'{transliterated}{path.suffix}'
+        return f"{transliterated}{path.suffix}"
 
 
 class SnakeCaseTransformer:
     def transform(self, string: str) -> str:
-        return re.sub(r'(?<!^)(?=[A-Z])', '_', string).lower()
+        return re.sub(r"(?<!^)(?=[A-Z])", "_", string).lower()

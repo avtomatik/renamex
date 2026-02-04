@@ -13,9 +13,9 @@ class LogFilenameFactory:
 
     def __init__(
         self,
-        prefix: str = 'log',
-        ext: str = 'json',
-        fmt: str = '%Y-%m-%d_%H-%M-%S'
+        prefix: str = "log",
+        ext: str = "json",
+        fmt: str = "%Y-%m-%d_%H-%M-%S",
     ):
         self.prefix = prefix
         self.ext = ext
@@ -23,5 +23,5 @@ class LogFilenameFactory:
 
     def __call__(self, timestamp: datetime | None = None) -> Path:
         timestamp = timestamp or datetime.now()
-        filename = f'{self.prefix}_{timestamp:{self.fmt}}.{self.ext}'
+        filename = f"{self.prefix}_{timestamp:{self.fmt}}.{self.ext}"
         return Path(filename)

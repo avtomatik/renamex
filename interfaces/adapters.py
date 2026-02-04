@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from ..tools.movers import FileMoverRenamer
-from ..tools.transformers import TrimFileNameTransformer
-from .protocols import FileTransformer
+from fileworks.interfaces.protocols import FileTransformer
+from fileworks.tools.movers import FileMoverRenamer
+from fileworks.tools.transformers import TrimFileNameTransformer
 
 
 class TrimFileNameTransformerAdapter:
@@ -23,10 +23,7 @@ class FileMoverAdapter:
         self.transformer = transformer
 
     def move_and_rename(
-        self,
-        src_dir: Path,
-        dst_dir: Path,
-        file_names: list[str]
+        self, src_dir: Path, dst_dir: Path, file_names: list[str]
     ) -> None:
         mover = FileMoverRenamer(self.transformer)
         mover.move_and_rename(src_dir, dst_dir, file_names)
