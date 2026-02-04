@@ -6,6 +6,6 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
 
-[tool.ruff]
+[tool.ruff.lint]
 line-length = 79
 select = ["E", "F", "I", "C"]  # E=pycodestyle, F=pyflakes, I=imports, C=complexity
