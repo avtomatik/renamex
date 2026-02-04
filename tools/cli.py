@@ -2,8 +2,10 @@ import argparse
 from pathlib import Path
 
 from fileworks.interfaces.adapters import FileMoverAdapter
-from fileworks.tools.cleaners import (CyrillicToLatinTransliterator,
-                                      RegexStringCleaner)
+from fileworks.tools.cleaners import (
+    CyrillicToLatinTransliterator,
+    RegexStringCleaner,
+)
 from fileworks.tools.filters import FileExtensionFilter, NullFileFilter
 from fileworks.tools.transformers import TrimFileNameTransformer
 
