@@ -1,0 +1,4 @@
+# Development dependencies for linting, type checking, and testing
+ruff>=0.0.360
+mypy>=1.5
+pytest>=8.0
