@@ -42,7 +42,7 @@ jobs:
         run: ruff check .
 
       - name: Type check with mypy
-        run: mypy fileworks
+        run: mypy .
 
       - name: Run tests (placeholder)
         run: |
