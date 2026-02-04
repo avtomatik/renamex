@@ -31,6 +31,11 @@ fileworks/
 │   ├── movers.py                # File moving/renaming logic
 │   └── transformers.py          # File name transformers
 ├── __main__.py                  # Entry point for `python3 -m fileworks`
+├──.github
+│   └── workflows/
+│       └── main.yml             # CI/CD pipeline
+├── requirements-dev.txt         # Dev dependencies: ruff, mypy, pytest
+├── pyproject.toml               # Project info & Ruff configuration
 ├── LICENSE.md
 └── README.md
 ```
