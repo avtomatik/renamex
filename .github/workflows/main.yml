@@ -39,7 +39,7 @@ jobs:
           echo "Installation complete."
 
       - name: Ruff lint and import check (strict)
-        run: ruff check fileworks
+        run: ruff check .
 
       - name: Type check with mypy
         run: mypy fileworks
