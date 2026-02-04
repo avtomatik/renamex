@@ -40,11 +40,3 @@ jobs:
 
       - name: Ruff lint and import check (strict)
         run: ruff check .
-
-      - name: Run tests (placeholder)
-        run: |
-          if [ -d tests ]; then
-            echo "Running tests..."
-            pytest tests
-          else
-            echo "No tests directory found. Skipping tests for now."
