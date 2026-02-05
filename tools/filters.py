@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from fileworks.interfaces.protocols import MatchFileFilter
 
@@ -14,7 +13,7 @@ class NameExclusionFilter:
             )
     """
 
-    def __init__(self, names_to_exclude: Union[str, tuple[str, ...]]):
+    def __init__(self, names_to_exclude: str | tuple[str, ...]):
         if isinstance(names_to_exclude, str):
             self.names_to_exclude = {names_to_exclude}
         else:

@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Iterable, Optional
+from typing import Iterable
 
 from fileworks.interfaces.protocols import FileNameTransformer, Logger
 from fileworks.tools.loggers import NullLogger
@@ -12,7 +12,7 @@ class FileMoverRenamer:
     """
 
     def __init__(
-        self, transformer: FileNameTransformer, logger: Optional[Logger] = None
+        self, transformer: FileNameTransformer, logger: Logger | None = None
     ):
         self.transformer = transformer
         self.logger = logger or NullLogger()  # Fallback if no logger provided
