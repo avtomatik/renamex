@@ -16,6 +16,7 @@
 ## Repository Structure
 
 ```
+
 fileworks/
 ├── core/                        # Core utilities and constants
 │   └── constants.py             # Constant values and mappings
@@ -38,6 +39,7 @@ fileworks/
 ├── pyproject.toml               # Project info & Ruff configuration
 ├── LICENSE.md
 └── README.md
+
 ```
 
 ---
@@ -60,7 +62,7 @@ cd fileworks
 Run the CLI tool with Python:
 
 ```bash
-python3 -m fileworks [path] [-e EXTENSIONS ...]
+python3 -m fileworks [path] [-e EXTENSIONS ...] [-v]
 ```
 
 ### Arguments
@@ -72,32 +74,48 @@ python3 -m fileworks [path] [-e EXTENSIONS ...]
   Filter files by one or more file extensions (without the leading dot).
   Example: `-e csv txt` will only process `.csv` and `.txt` files.
 
+* `-v`, `--verbose` (optional):
+  Enable verbose output, printing details of files being processed (old name >> new name).
+
 ---
 
 ### Examples
 
-Process **all files** in the current directory:
+#### Process **all files** in the current directory:
 
 ```bash
 python3 -m fileworks
 ```
 
-Process **only `.csv` and `.txt` files** in the current directory:
+#### Process **only `.csv` and `.txt` files** in the current directory:
 
 ```bash
 python3 -m fileworks -e csv txt
 ```
 
-Process **all files** in a specific directory:
+#### Process **all files** in a specific directory:
 
 ```bash
 python3 -m fileworks /path/to/directory
 ```
 
-Process **only `.csv` files** in a specific directory:
+#### Process **only `.csv` files** in a specific directory:
 
 ```bash
 python3 -m fileworks /path/to/directory -e csv
+```
+
+#### Enable **verbose output** (shows file renaming details):
+
+```bash
+python3 -m fileworks -v /path/to/directory -e csv
+```
+
+This will display detailed information like:
+
+```
+Renaming 'отчет_январь.csv' >> 'otchet_yanvar.csv'
+Renaming 'отчет_февраль.csv' >> 'otchet_fevral.csv'
 ```
 
 ---
@@ -105,6 +123,7 @@ python3 -m fileworks /path/to/directory -e csv
 ## Getting Started (Before & After)
 
 Suppose you have a directory with the following files:
+
 
 ```
 ~/Downloads/TestFiles/
@@ -137,12 +156,25 @@ will process the files using the cleaning, transliteration, and trimming rules. 
 * Only `.csv` and `.txt` files were processed.
 * Hidden files (starting with `.`) are ignored by default.
 
-This gives users a quick understanding of the transformations FileWorks performs.
+**With Verbose Mode Enabled:**
+
+If you run the command with the `-v` flag:
+
+```bash
+python3 -m fileworks -v ~/Downloads/TestFiles -e csv txt
+```
+
+The output will be:
+
+```
+Renaming 'отчет_январь.csv' >> 'otchet_yanvar.csv'
+Renaming 'отчет_февраль.csv' >> 'otchet_fevral.csv'
+Renaming 'пример.txt' >> 'primer.txt'
+```
 
 ---
 
 ## Notes
-
 
 * File extensions passed to `-e` should **not** include the leading dot (`.`).
 * If no extensions are specified, all files in the directory are processed.

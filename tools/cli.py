@@ -26,6 +26,15 @@ def main():
         nargs="+",
         help="Filter files by extensions (space separated, e.g. -e csv txt)",
     )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help=(
+            "Enable verbose output, printing details of files being processed"
+        ),
+    )
+
     args = parser.parse_args()
 
     path = Path(args.path).resolve()
@@ -48,7 +57,7 @@ def main():
     file_names = [f.name for f in path.iterdir() if file_filter.is_target(f)]
 
     if file_names:
-        mover.move_and_rename(path, path, file_names)
+        mover.move_and_rename(path, path, file_names, verbose=args.verbose)
         print(f"Processed {len(file_names)} file(s).")
     else:
         print("No files matched the specified criteria.")

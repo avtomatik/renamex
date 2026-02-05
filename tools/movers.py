@@ -8,7 +8,7 @@ from fileworks.tools.loggers import NullLogger
 class FileMoverRenamer:
     """
     Moves and renames files in a directory using a transformer, with optional
-    logging.
+    logging and verbose output.
     """
 
     def __init__(
@@ -18,7 +18,11 @@ class FileMoverRenamer:
         self.logger = logger or NullLogger()  # Fallback if no logger provided
 
     def move_and_rename(
-        self, src_dir: Path, dst_dir: Path, file_names: Iterable[str]
+        self,
+        src_dir: Path,
+        dst_dir: Path,
+        file_names: Iterable[str],
+        verbose: bool = False,
     ) -> None:
         logs: list[dict[str, str]] = []
 
@@ -36,6 +40,9 @@ class FileMoverRenamer:
             src_path.rename(dst_path)
 
             logs.append({"src": file_name, "dst": new_name})
+
+            if verbose:
+                print(f"Renaming '{file_name}' >> '{new_name}'")
 
         if logs:
             self.logger.log(logs)

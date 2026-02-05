@@ -23,7 +23,11 @@ class FileMoverAdapter:
         self.transformer = transformer
 
     def move_and_rename(
-        self, src_dir: Path, dst_dir: Path, file_names: list[str]
+        self,
+        src_dir: Path,
+        dst_dir: Path,
+        file_names: list[str],
+        verbose: bool,
     ) -> None:
         mover = FileMoverRenamer(self.transformer)
-        mover.move_and_rename(src_dir, dst_dir, file_names)
+        mover.move_and_rename(src_dir, dst_dir, file_names, verbose)
