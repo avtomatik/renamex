@@ -1,200 +1,162 @@
-# FileWorks
+# renamex
 
-**FileWorks** is a Python utility suite for efficient file system operations, including moving, renaming, filtering, and transforming files. It provides a simple CLI tool to automate common file management tasks and handle large volumes of files with minimal manual intervention.
+[![CI](https://github.com/avtomatik/renamex/.github/workflows/main.yml/badge.svg)](https://github.com/avtomatik/renamex/.github)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
+
+**renamex** is a fast and reliable command-line tool for cleaning, normalizing, and renaming files in bulk.
+
+It provides safe and predictable transformations, including transliteration, string normalization, and extension-based filtering.
 
 ---
 
 ## Features
 
-* **File Transformation**: Rename files with customizable rules, such as transliteration and string cleaning.
-* **File Filtering**: Process only files with certain extensions.
-* **File Renaming**: Move and rename files safely and efficiently.
-* **Utility Functions**: Core modules for file handling, string cleaning, and file system operations.
+- Filename normalization
+  - Removes invalid characters
+  - Replaces separators with underscores
+  - Produces consistent file names
 
----
+- Transliteration
+  - Converts Cyrillic characters to Latin equivalents
 
-## Repository Structure
+- Extension filtering
+  - Processes only selected file types
 
-```
+- Safe renaming
+  - Skips unchanged files
+  - Prevents overwriting existing files
 
-fileworks/
-├── core/                        # Core utilities and constants
-│   └── constants.py             # Constant values and mappings
-├── interfaces/                  # Abstractions and adapters
-│   ├── adapters.py              # File moving adapter
-│   └── protocols.py             # Interface definitions
-├── tools/                       # Utility modules for filtering, cleaning, and transforming
-│   ├── cleaners.py              # File name cleaning and transliteration
-│   ├── cli.py                   # Command-line interface
-│   ├── filenames.py             # File name helpers
-│   ├── filters.py               # File filtering rules
-│   ├── loggers.py               # Logging for file operations
-│   ├── movers.py                # File moving/renaming logic
-│   └── transformers.py          # File name transformers
-├── __main__.py                  # Entry point for `python3 -m fileworks`
-├──.github
-│   └── workflows/
-│       └── main.yml             # CI/CD pipeline
-├── requirements-dev.txt         # Dev dependencies: ruff, mypy, pytest
-├── pyproject.toml               # Project info & Ruff configuration
-├── LICENSE.md
-└── README.md
+- Parallel processing
+  - Efficient handling of large directories
 
-```
+- Dry-run mode
+  - Preview changes before applying them
 
 ---
 
 ## Installation
 
-Clone the repository and navigate into it:
+### From source
 
 ```bash
-git clone https://github.com/avtomatik/fileworks.git
-cd fileworks
-```
+git clone https://github.com/avtomatik/renamex.git
+cd renamex
+cargo install --path .
+````
 
-*(Optionally, create a virtual environment and install dependencies if required.)*
+### From crates.io (after publishing)
+
+```bash
+cargo install renamex
+```
 
 ---
 
 ## Usage
 
-Run the CLI tool with Python:
-
 ```bash
-python3 -m fileworks [path] [-e EXTENSIONS ...] [-v]
+renamex [path] [OPTIONS]
 ```
 
 ### Arguments
 
-* `path` (optional):
-  Directory to process. Defaults to the **current working directory** if not provided.
+* `path` (optional)
+  Directory to process. Defaults to the current working directory.
 
-* `-e`, `--extensions` (optional):
-  Filter files by one or more file extensions (without the leading dot).
-  Example: `-e csv txt` will only process `.csv` and `.txt` files.
+### Options
 
-* `-v`, `--verbose` (optional):
-  Enable verbose output, printing details of files being processed (old name >> new name).
+* `-e, --extensions <EXT>...`
+  Filter files by extension (without leading dot)
+
+* `-v, --verbose`
+  Print detailed processing output
+
+* `--dry-run`
+  Show planned changes without modifying files
 
 ---
 
-### Examples
+## Examples
 
-#### Process **all files** in the current directory:
-
-```bash
-python3 -m fileworks
-```
-
-#### Process **only `.csv` and `.txt` files** in the current directory:
+### Process all files
 
 ```bash
-python3 -m fileworks -e csv txt
+renamex
 ```
 
-#### Process **all files** in a specific directory:
+### Process specific extensions
 
 ```bash
-python3 -m fileworks /path/to/directory
+renamex -e csv txt
 ```
 
-#### Process **only `.csv` files** in a specific directory:
+### Process a directory
 
 ```bash
-python3 -m fileworks /path/to/directory -e csv
+renamex /path/to/directory
 ```
 
-#### Enable **verbose output** (shows file renaming details):
+### Preview changes
 
 ```bash
-python3 -m fileworks -v /path/to/directory -e csv
-```
-
-This will display detailed information like:
-
-```
-Renaming 'отчет_январь.csv' >> 'otchet_yanvar.csv'
-Renaming 'отчет_февраль.csv' >> 'otchet_fevral.csv'
+renamex --dry-run -v
 ```
 
 ---
 
-## Getting Started (Before & After)
+## Example
 
-Suppose you have a directory with the following files:
-
+### Input
 
 ```
-~/Downloads/TestFiles/
-├── отчет_январь.csv
-├── отчет_февраль.csv
-├── пример.txt
-├── .hidden_file
+отчет_январь.csv
+отчет_февраль.csv
+пример.txt
 ```
 
-Running FileWorks with:
+### Command
 
 ```bash
-python3 -m fileworks ~/Downloads/TestFiles -e csv txt
+renamex -e csv txt -v
 ```
 
-will process the files using the cleaning, transliteration, and trimming rules. After processing, the directory may look like this:
+### Output
 
 ```
-~/Downloads/TestFiles/
-├── otchet_yanvar.csv
-├── otchet_fevral.csv
-├── primer.txt
-├── .hidden_file
-```
-
-**What happened:**
-
-* Cyrillic file names were transliterated to Latin characters.
-* Spaces or invalid characters were replaced with underscores.
-* Only `.csv` and `.txt` files were processed.
-* Hidden files (starting with `.`) are ignored by default.
-
-**With Verbose Mode Enabled:**
-
-If you run the command with the `-v` flag:
-
-```bash
-python3 -m fileworks -v ~/Downloads/TestFiles -e csv txt
-```
-
-The output will be:
-
-```
-Renaming 'отчет_январь.csv' >> 'otchet_yanvar.csv'
-Renaming 'отчет_февраль.csv' >> 'otchet_fevral.csv'
-Renaming 'пример.txt' >> 'primer.txt'
+отчет_январь.csv -> otchet_yanvar.csv
+отчет_февраль.csv -> otchet_fevral.csv
+пример.txt -> primer.txt
 ```
 
 ---
 
-## Notes
+## Behavior
 
-* File extensions passed to `-e` should **not** include the leading dot (`.`).
-* If no extensions are specified, all files in the directory are processed.
-* The tool processes only **regular files**, ignoring directories.
-* Use `--help` to display usage information:
+* Processes only regular files
+* Renames files in place
+* Never overwrites existing files
+* Skips files that do not change
+
+---
+
+## Development
 
 ```bash
-python3 -m fileworks --help
+cargo build --release
+cargo test
+cargo fmt --check
+cargo clippy -- -D warnings
 ```
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Fork the repository, create a branch, and submit a pull request with your changes.
+Contributions are welcome. Please open an issue or submit a pull request.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE.md](LICENSE.md) for details.
-
----
+MIT License. See `LICENSE.md` for details.
