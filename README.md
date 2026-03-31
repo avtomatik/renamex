@@ -1,6 +1,6 @@
 # renamex
 
-[![CI](https://github.com/avtomatik/renamex/.github/workflows/main.yml/badge.svg)](https://github.com/avtomatik/renamex/.github)
+[![CI](https://github.com/avtomatik/renamex/actions/workflows/main.yml/badge.svg)](https://github.com/avtomatik/renamex/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 [![Rust](https://img.shields.io/badge/rust-1.70%2B-orange.svg)](https://www.rust-lang.org)
 

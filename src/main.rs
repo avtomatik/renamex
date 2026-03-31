@@ -6,8 +6,6 @@ mod file_ops;
 mod filter;
 mod transform;
 
-use tracing_subscriber;
-
 fn main() {
     tracing_subscriber::fmt::init();
 
