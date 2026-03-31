@@ -1,7 +1,8 @@
+use std::collections::HashSet;
 use std::path::Path;
 
 pub fn extension_filter(exts: Vec<String>) -> impl Fn(&Path) -> bool + Sync {
-    let exts: Vec<String> = exts
+    let exts: HashSet<String> = exts
         .into_iter()
         .map(|e| {
             if e.starts_with('.') {

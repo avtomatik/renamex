@@ -6,7 +6,7 @@ use crate::file_ops::process_files;
 use crate::filter::extension_filter;
 
 #[derive(Parser, Debug)]
-#[command(name = "fileworks")]
+#[command(name = "renamex")]
 pub struct Args {
     #[arg(default_value = ".")]
     pub path: PathBuf,
@@ -19,6 +19,9 @@ pub struct Args {
 
     #[arg(long)]
     pub dry_run: bool,
+
+    #[arg(short, long)]
+    pub recursive: bool,
 }
 
 pub fn run() -> Result<(), AppError> {
@@ -34,7 +37,13 @@ pub fn run() -> Result<(), AppError> {
         Some(extension_filter(args.extensions))
     };
 
-    process_files(&args.path, filter.as_ref(), args.verbose, args.dry_run)?;
+    process_files(
+        &args.path,
+        filter,
+        args.recursive,
+        args.verbose,
+        args.dry_run,
+    )?;
 
     Ok(())
 }
