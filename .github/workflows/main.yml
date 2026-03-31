@@ -1,42 +1,40 @@
 name: CI
-
+ 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
-
+ 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    strategy:
-      matrix:
-        python-version: [3.11, 3.12, 3.13, 3.14]
-
+ 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+ 
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-dev.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install development dependencies
-        run: |
-          python -m pip install --no-cache-dir --upgrade pip
-          pip install --no-cache-dir -r requirements-dev.txt
-          echo "Installation complete."
-
-      - name: Ruff lint and import check (strict)
-        run: ruff check .
+          components: clippy, rustfmt
+ 
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+ 
+      - name: Check (fast compile)
+        run: cargo check --all-targets
+ 
+      - name: Format check
+        run: cargo fmt --all -- --check
+ 
+      - name: Clippy (strict linting)
+        run: cargo clippy --all-targets -- -D warnings
+ 
+      - name: Run tests
+        run: cargo test --all
+ 
+      - name: Build release
+        run: cargo build --release
