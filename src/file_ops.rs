@@ -1,53 +1,66 @@
+use rayon::prelude::*;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use tracing::{info, warn};
 
+use crate::error::AppError;
 use crate::transform::transform_filename;
 
 pub fn process_files(
     dir: &Path,
-    filter: Option<&impl Fn(&Path) -> bool>,
+    filter: Option<&(impl Fn(&Path) -> bool + Sync)>,
     verbose: bool,
-) -> Result<(), Box<dyn std::error::Error>> {
-    let entries = fs::read_dir(dir)?;
+    dry_run: bool,
+) -> Result<(), AppError> {
+    let entries: Vec<PathBuf> = fs::read_dir(dir)?
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.is_file())
+        .collect();
 
-    let mut count = 0;
+    let results: Vec<_> = entries
+        .par_iter()
+        .filter(|path| if let Some(f) = filter { f(path) } else { true })
+        .map(|path| process_one(path, dir, verbose, dry_run))
+        .collect();
 
-    for entry in entries {
-        let path = entry?.path();
+    let mut renamed = 0;
 
-        if !path.is_file() {
-            continue;
+    for res in results {
+        match res {
+            Ok(true) => renamed += 1,
+            Ok(false) => {}
+            Err(e) => warn!("Failed: {}", e),
         }
-
-        if let Some(f) = filter {
-            if !f(&path) {
-                continue;
-            }
-        }
-
-        let file_name = path.file_name().unwrap().to_string_lossy();
-        let new_name = transform_filename(&file_name);
-
-        if file_name == new_name {
-            continue;
-        }
-
-
-        let new_path = dir.join(&new_name);
-        fs::rename(&path, &new_path)?;
-
-        if verbose {
-            println!("{} -> {}", file_name, new_name);
-        }
-
-        count += 1;
     }
 
-    if count == 0 {
-        println!("No files renamed");
-    } else {
-        println!("Processed {} files", count);
-    }
+    info!("Processed {} files", renamed);
 
     Ok(())
+}
+
+fn process_one(path: &Path, dir: &Path, verbose: bool, dry_run: bool) -> Result<bool, AppError> {
+    let file_name = path.file_name().unwrap().to_string_lossy();
+    let new_name = transform_filename(&file_name);
+
+    if file_name == new_name {
+        return Ok(false);
+    }
+
+    let new_path = dir.join(&new_name);
+
+    // prevent overwrite
+    if new_path.exists() {
+        warn!("Skipping (exists): {}", new_name);
+        return Ok(false);
+    }
+
+    if verbose || dry_run {
+        info!("{} -> {}", file_name, new_name);
+    }
+
+    if !dry_run {
+        fs::rename(path, new_path)?;
+    }
+
+    Ok(true)
 }

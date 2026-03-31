@@ -1,12 +1,18 @@
-mod cli;
-mod file_ops;
-mod transform;
 mod clean;
-mod filter;
+mod cli;
 mod constants;
+mod error;
+mod file_ops;
+mod filter;
+mod transform;
+
+use tracing_subscriber;
 
 fn main() {
+    tracing_subscriber::fmt::init();
+
     if let Err(e) = cli::run() {
         eprintln!("Error: {}", e);
+        std::process::exit(1);
     }
 }

@@ -1,9 +1,15 @@
 use std::path::Path;
 
-pub fn extension_filter(exts: Vec<String>) -> impl Fn(&Path) -> bool {
+pub fn extension_filter(exts: Vec<String>) -> impl Fn(&Path) -> bool + Sync {
     let exts: Vec<String> = exts
         .into_iter()
-        .map(|e| if e.starts_with('.') { e } else { format!(".{}", e) })
+        .map(|e| {
+            if e.starts_with('.') {
+                e
+            } else {
+                format!(".{}", e)
+            }
+        })
         .collect();
 
     move |path: &Path| {

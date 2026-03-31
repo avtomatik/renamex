@@ -9,10 +9,10 @@ pub fn transform_filename(file_name: &str) -> String {
     let ext = path.extension().map(|e| e.to_string_lossy());
 
     let cleaned = clean_string(&stem);
-    let transliterated = transliterate(&cleaned);
+    let translit = transliterate(&cleaned);
 
     match ext {
-        Some(ext) => format!("{}.{}", transliterated, ext),
-        None => transliterated,
+        Some(ext) => format!("{}.{}", translit, ext),
+        None => translit,
     }
 }
