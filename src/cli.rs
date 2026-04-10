@@ -19,9 +19,10 @@ pub struct Args {
 
     #[arg(long)]
     pub dry_run: bool,
-}
 
-type FilterFn = dyn Fn(&std::path::Path) -> bool + Sync;
+    #[arg(short, long)]
+    pub recursive: bool,
+}
 
 pub fn run() -> Result<(), AppError> {
     let args = Args::parse();
@@ -30,13 +31,19 @@ pub fn run() -> Result<(), AppError> {
         return Err(AppError::InvalidDirectory(args.path.display().to_string()));
     }
 
-    let filter: Option<Box<FilterFn>> = if args.extensions.is_empty() {
+    let filter = if args.extensions.is_empty() {
         None
     } else {
-        Some(Box::new(extension_filter(args.extensions)))
+        Some(extension_filter(args.extensions))
     };
 
-    process_files(&args.path, filter.as_deref(), args.verbose, args.dry_run)?;
+    process_files(
+        &args.path,
+        filter,
+        args.recursive,
+        args.verbose,
+        args.dry_run,
+    )?;
 
     Ok(())
 }
