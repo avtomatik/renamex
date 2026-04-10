@@ -6,8 +6,10 @@ mod file_ops;
 mod filter;
 mod transform;
 
+use tracing_subscriber::{EnvFilter, fmt};
+
 fn main() {
-    tracing_subscriber::fmt::init();
+    fmt().with_env_filter(EnvFilter::from_default_env()).init();
 
     if let Err(e) = cli::run() {
         eprintln!("Error: {}", e);
