@@ -8,6 +8,7 @@ repository = "https://github.com/avtomatik/renamex"
 readme = "README.md"
 keywords = ["cli", "rename", "files", "filesystem", "utility"]
 categories = ["command-line-utilities", "filesystem"]
+exclude = ["*.orig", "*.rej"]
 
 [[bin]]
 name = "renamex"
